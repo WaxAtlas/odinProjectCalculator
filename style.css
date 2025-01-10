@@ -53,6 +53,10 @@ button {
     width: 393px;
 }
 
+#clear {
+    width: 200px;
+}
+
 #zero {
     width: 200px;
 }
