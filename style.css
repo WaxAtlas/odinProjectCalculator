@@ -11,20 +11,20 @@ button {
     width: 100px;
 }
 
-.control {
-    background-color: #268bd2;
-}
-
-.number {
+.number, #plusMinus {
     background-color: #859900;
 }
 
-.operator {
+.operator, #equals {
     background-color: #b58900;
 }
 
 .row {
     display: flex;
+}
+
+#clear {
+    background-color: #268bd2;
 }
 
 #calculator {

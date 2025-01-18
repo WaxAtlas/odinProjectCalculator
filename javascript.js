@@ -13,7 +13,7 @@ class Calculator {
     }
 
     clear() {
-        this.operandInput = "0";
+        this.operandInput = "";
         this.operandLeft = "";
         this.operandRight = "";
         this.operator = "";
@@ -56,7 +56,7 @@ class Calculator {
 
         this.displayValue = this.result.toString();
         this.updateDisplay();
-        console.log("Result: " + this.result);
+        console.log("OpLeft: " + this.operandLeft + " OpRight: " + this.operandRight + " Result: " + this.result);
     }
 
     invertInput() {
@@ -71,93 +71,81 @@ class Calculator {
     }
 }
 
+const numButtonHandler = function (e) {
+    calc.operandInput += e.currentTarget.innerText;
+    calc.displayValue = calc.operandInput;
+    calc.updateDisplay();
+}
+
+const opButtonHandler = function (e) {
+    if (calc.operandLeft === "") {
+        calc.operandLeft = calc.operandInput;
+    }
+    else if (calc.operandRight === "") {
+        calc.operandRight = calc.operandInput;
+    }
+    
+    calc.operandInput = "";
+
+    const operator = e.currentTarget.innerText;
+    if (calc.operator === "") {
+        calc.operator = operator;
+    }
+    else {
+        calc.operate();
+        calc.operator = operator;
+        calc.operandLeft = calc.result.toString();
+        calc.operandRight = "";
+    }
+}
+
+const eqButtonHandler = function (e) {
+    if (calc.operandLeft === "") {
+        calc.operandLeft = calc.operandInput;
+    }
+    else if (calc.operandRight === "") {
+        calc.operandRight = calc.operandInput;
+    }
+
+    calc.operandInput = "";
+
+    if ((calc.operandLeft !== "") && (calc.operandRight !== "")) {
+        const temp = calc.operandRight;
+        calc.operate();
+        calc.operandLeft = calc.result.toString();
+        calc.operandRight = temp;
+    }
+}
+
+const clrButtonHandler = function (e) {
+    calc.clear();
+}
+
+const plusMinusButtonHandler = function (e) {
+    calc.invertInput();
+}
+
+/** @type {HTMLButtonElement | null} */
+const clearButton = document.querySelector("#clear");
+clearButton?.addEventListener("click", clrButtonHandler);
+
+/** @type {HTMLButtonElement | null} */
+const eqButton = document.querySelector("#equals");
+eqButton?.addEventListener("click", eqButtonHandler);
+
 /** @type {NodeListOf<HTMLButtonElement>} */
-const buttons = document.querySelectorAll("button");
+const numButtons = document.querySelectorAll(".number");
+numButtons.forEach(button => { button.addEventListener("click", numButtonHandler) });
+
+/** @type {NodeListOf<HTMLButtonElement>} */
+const opButtons = document.querySelectorAll(".operator");
+opButtons.forEach(button => { button.addEventListener("click", opButtonHandler) });
+
+/** @type {HTMLButtonElement | null} */
+const plusMinusButton = document.querySelector("#plusMinus");
+plusMinusButton?.addEventListener("click", plusMinusButtonHandler);
 
 /** @type {HTMLDivElement | null} */
 const display = document.querySelector("#display");
-
-const equals = function () {
-    if (operandLeft === null) {
-        operandLeft = parseFloat(operandInput);
-    }
-    else if (operandRight === null) {
-        operandRight = parseFloat(operandInput);
-    }
-
-    operandInput = "";
-
-    if ((operandLeft !== null) && (operandRight !== null)) {
-        const temp = operandRight;
-        operate();
-        operandRight = temp;
-    }
-}
-
-const updateOperand = function (e) {
-    operandInput += e.currentTarget.textContent;
-    displayValue = operandInput;
-    updateDisplay();
-}
-
-const updateOperator = function (e) {
-    if (operandLeft === null) {
-        operandLeft = parseFloat(operandInput);
-    }
-    else if (operandRight === null) {
-        operandRight = parseFloat(operandInput);
-    }
-
-    operandInput = "";
-
-    const operator = e.currentTarget.textContent;
-    if (!operatorFirst) {
-        operatorFirst = operator;
-    }
-    else {
-        operate();
-        operatorFirst = operator
-    }
-}
-
-const operate = function () {
-    if (operatorFirst === "+") {
-        result = add(operandLeft, operandRight);
-    }
-    if (operatorFirst === "-") {
-        result = subtract(operandLeft, operandRight);
-    }
-    if (operatorFirst === "*") {
-        result = multiply(operandLeft, operandRight);
-    }
-    if (operatorFirst === "/") {
-        result = divide(operandLeft, operandRight);
-    }
-
-    operandLeft = result;
-    operandRight = null;
-
-    displayValue = result.toString();
-    updateDisplay();
-    console.log(result);
-}
-
-buttons.forEach(button => {
-    if (button.className === "operator" && button.id !== "equals") {
-        button.addEventListener("click", updateOperator, false);
-    }
-    if (button.className === "number") {
-        button.addEventListener("click", updateOperand, false);
-    }
-    if (button.id === "clear") {
-        button.addEventListener("click", calc.clear);
-    }
-    if (button.id === "equals") {
-        button.addEventListener("click", equals);
-    }
-    if (button.id === "plusMinus") {
-        button.addEventListener("click", calc.invertInput);
-    }
-});
 
 const calc = new Calculator();
