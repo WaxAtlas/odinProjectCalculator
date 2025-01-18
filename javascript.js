@@ -148,4 +148,17 @@ plusMinusButton?.addEventListener("click", plusMinusButtonHandler);
 /** @type {HTMLDivElement | null} */
 const display = document.querySelector("#display");
 
+document.addEventListener("keydown", (e) => {
+    const key = e.key;
+    if (Number.isInteger(+key) || key === ".") {
+        numButtons.forEach((button) => { if (button.innerText === key) button.click(); });
+    } else if (key === "+" || key === "-" || key === "*" || key === "/") {
+        opButtons.forEach((button) => { if (button.innerText === key) button.click(); });
+    } else if (key === "=" || key === "Enter") {
+        eqButton?.click();
+    } else if (key === "Escape") {
+        clearButton?.click();
+    }
+});
+
 const calc = new Calculator();
